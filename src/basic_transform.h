@@ -7,16 +7,38 @@
 #include <SFML/System/Vector2.hpp>
 
 struct BasicTransform {
-    // TODO: Determine if possible in general, else provide counterexample:
     // compose(f, g) is equivalent to first applying g, then applying f.
     static BasicTransform compose(const BasicTransform& f, const BasicTransform& g) {
-        return {};
+        return BasicTransform(
+            f.scale*g.scale,
+            f.translation * g.scale + g.translation
+        );
     };
+    /*
+        point p = (3,4)
+        BasicTransform f = scale:(1,2), translation:(-4,0)
+        BasicTransform g = scale:(-1,-1), translation:(6,6)
+        q = f.applyPoint(p) ( q = (3*1-4,4*2) = (-1,8) )
+        r = g.applyPoint(q) ( r = (-1*-1+6,8*-1+6) = (7,-2) )
+        h.applyPoint(3,4) == (7,-2)
+            r.x = (3*1-4)*-1+6
+                = 3*-1+4+6
+            h.scale = q.scale*r.scale
+            h.translation = q.translation*r.scale + r.translation
+    */
 
-    // TODO: Determine if possible in general, else provide counterexample:
     static BasicTransform inverse(const BasicTransform& f) {
-        return {};
+        return BasicTransform(
+            {1/f.scale.x, 1/f.scale.y},
+            {-f.translation.x/f.scale.x, -f.translation.y/f.scale.y}
+        );
     };
+    /* 
+        f(x) = sx + t
+            x' = sx + t
+            x = (x' - t) / s
+            x = (1/s)x' - t/s
+    */
 
     constexpr BasicTransform(const sf::Vector2f& scale = {1.f, 1.f},
                              const sf::Vector2f& translation = {0.f, 0.f})
