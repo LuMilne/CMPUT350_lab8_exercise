@@ -1,0 +1,13 @@
+Q1:
+    ...Which data field of your Sprite is the best candidate to move out into a separate component type in an ECS setup?...
+
+A1:
+    BasicTransform mTransform is only needed when the time comes to draw the sprite in position. A handler could manage
+    the locations of sprites separately and provide the transformations for their intended locations instead.
+
+Q2: 
+    ...What does this mean we have to do if we want to render multiple, possibly translucent sprites on top of eachother?
+
+A2: 
+    We need to blend sprites in order from background to foreground, so that sprites are only tinted or obscured
+    by sprites that are "in between" them and the viewer
